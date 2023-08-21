@@ -34,7 +34,9 @@ router.get("/:id", async (req, res) => {
 // create new product
 router.post("/", async (req, res) => {
   try {
-    const newProduct = await Product.create(req.body);
+    const newProduct = await Product.create({
+      product_name: req.body.product_name,
+    });
 
     if (req.body.tagIds && req.body.tagIds.length) {
       const productTagIdArr = req.body.tagIds.map((tag_id) => {
@@ -55,11 +57,16 @@ router.post("/", async (req, res) => {
 // update product
 router.put("/:id", async (req, res) => {
   try {
-    await Product.update(req.body, {
-      where: {
-        id: req.params.id,
+    await Product.update(
+      {
+        product_name: req.body.product_name,
       },
-    });
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
 
     if (req.body.tagIds && req.body.tagIds.length) {
       const productTags = await ProductTag.findAll({
