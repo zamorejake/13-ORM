@@ -22,7 +22,7 @@ router.get("/:id", async (req, res) => {
     });
 
     !category
-      ? res.status(404).json({ message: "Category not found" })
+      ? res.status(404).json({ message: "Category not found." })
       : res.status(200).json(category);
   } catch (err) {
     res.status(500).json(err);
@@ -48,8 +48,8 @@ router.put("/:id", async (req, res) => {
     });
 
     updateCategory[0] === 0
-      ? res.status(404).json({ message: "Category not found" })
-      : res.status(200).json({ message: "Category updated" });
+      ? res.status(404).json({ message: "Category not found." })
+      : res.status(200).json({ message: "Category updated." });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -57,15 +57,24 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
+    //have to delete product since it's a protected child row
+    const deleteProduct = await Product.destroy({
+      where: {
+        category_id: req.params.id
+      }
+    });
+
     const deleteCategory = await Category.destroy({
       where: {
         id: req.params.id,
       },
     });
 
-    !deleteCategory
-      ? res.status(404).json({ message: "Category not found" })
-      : res.status(200).json({ message: "Category deleted" });
+   
+
+    !deleteCategory || !deleteProduct
+      ? res.status(404).json({ message: "Category not found." })
+      : res.status(200).json({ message: "Category deleted." });
   } catch (err) {
     res.status(500).json(err);
   }
